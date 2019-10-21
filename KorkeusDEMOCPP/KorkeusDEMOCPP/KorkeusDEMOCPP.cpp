@@ -10,7 +10,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-bool isInitializationDone = false;
+bool isInitializationDone = false;				// check to see if file was loaded at startup
 
 // Global classes
 MapRGBData rgb;
@@ -131,6 +131,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
+		// Load file on startup
 		isInitializationDone = FileIntoRGB(rgb, meta);
 		break;
 	case WM_COMMAND:
@@ -155,24 +156,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 		HDC hMemDC = CreateCompatibleDC(hdc);
-		if (isInitializationDone == true) {
-			int mapWidth = meta.mapwidth;
-			int mapHeight = meta.mapheight;
-			HBITMAP hBmp = ::CreateCompatibleBitmap(hdc, mapWidth, mapHeight);
-			BitmapData mapBit(hdc, hBmp, rgb.rgbdata, mapWidth, mapHeight);
 
-			int asdf = mapBit.DIBtoDDB();
-			if (asdf == 0) {
+		// Draw map image if file was successfully loaded on startup
+		if (isInitializationDone == true) {
+			HBITMAP hBmp = ::CreateCompatibleBitmap(hdc, meta.mapwidth, meta.mapheight);
+			BitmapData mapBit(hdc, hBmp, rgb.rgbdata, meta.mapwidth, meta.mapheight);
+
+			int dibToDdb = mapBit.DIBtoDDB();
+			if (dibToDdb == 0) {
 				::MessageBox(NULL, __T("Failed to set DIB."), __T("Error"), MB_OK);
 				return NULL;
 			}
-			HBITMAP holdmap = (HBITMAP)::SelectObject(hMemDC, hBmp);
-			if (holdmap == NULL) {
+			HBITMAP selectSuccess = (HBITMAP)::SelectObject(hMemDC, hBmp);
+			if (selectSuccess == NULL) {
 				::MessageBox(NULL, __T("Failed to SelectObject."), __T("Error"), MB_OK);
 				return NULL;
 			}
-			BOOL testi = ::BitBlt(hdc, 0, 0, mapWidth, mapHeight, hMemDC, 0, 0, SRCCOPY);
-			if (!testi) {
+			BOOL bitbltSuccess = ::BitBlt(hdc, 0, 0, meta.mapwidth, meta.mapheight, hMemDC, 0, 0, SRCCOPY);
+			if (!bitbltSuccess) {
 				::MessageBox(NULL, __T("Failed to BitBlt."), __T("Error"), MB_OK);
 				return NULL;
 			}
