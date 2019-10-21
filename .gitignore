@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/KorkeusDEMOCPP/.vs/KorkeusDEMOCPP/v16
+/KorkeusDEMOCPP/Debug
+/KorkeusDEMOCPP/KorkeusDEMOCPP/Debug
