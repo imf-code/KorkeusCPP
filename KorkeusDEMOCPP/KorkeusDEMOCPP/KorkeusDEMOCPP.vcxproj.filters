@@ -32,6 +32,9 @@
     <ClCompile Include="KorkeusDEMOCPP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KorkeusDEMO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KorkeusDEMOCPP.rc">

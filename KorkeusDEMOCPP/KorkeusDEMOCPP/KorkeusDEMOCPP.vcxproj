@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KorkeusDEMOCPP.cpp" />
+    <ClCompile Include="KorkeusDEMO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KorkeusDEMOCPP.rc" />
