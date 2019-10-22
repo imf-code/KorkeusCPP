@@ -73,12 +73,12 @@ public:
 	};
 
 	int DIBtoDDB() {
-		int asdf = SetDIBits(hdc, bitmapHandle, 1, height, pMap, &mapInfo, DIB_PAL_COLORS);
-		if (asdf == 0) {
+		int dib = SetDIBits(hdc, bitmapHandle, 1, height, pMap, &mapInfo, DIB_PAL_COLORS);
+		if (dib == 0) {
 			::MessageBox(NULL, __T("Failed to set DIBits."), __T("Error"), MB_OK);
 			return NULL;
 		}
-		else return asdf;
+		else return dib;
 	};
 };
 

@@ -161,7 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HDC hdc = BeginPaint(hWnd, &ps);
 
 		// Draw the map in window, if file was successfully loaded on startup
-		if (isInitializationDone == true) {
+		if (isInitializationDone) {
 			HDC hMemDC = CreateCompatibleDC(hdc);
 			HBITMAP hBmp = ::CreateCompatibleBitmap(hdc, meta.mapwidth, meta.mapheight);
 			BitmapData mapBit(hdc, hBmp, rgb.rgbdata, meta.mapwidth, meta.mapheight);

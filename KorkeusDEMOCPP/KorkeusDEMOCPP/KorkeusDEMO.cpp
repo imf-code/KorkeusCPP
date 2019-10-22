@@ -69,7 +69,7 @@ bool FileIntoRGB(MapRGBData& mapRGB, MapMetadata& meta) {
 
 		// Tokenization + conversion to float
 		// Implementation is a bit hacky, but fastest of the bunch I tried
-		// Performance throttled by running in a single thread
+		// Performance throttled by, among other things, running in a single thread
 		vector<float> mapElevationData (meta.mapsize);
 		char* temp = new char[10];
 		for (int i = 0; i < meta.mapsize; i++) {
