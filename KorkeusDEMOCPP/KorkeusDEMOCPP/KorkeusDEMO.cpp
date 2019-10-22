@@ -1,4 +1,4 @@
-// Code for visualizing ascii elevation data
+// Code for visualizing ascii-encoded elevation data
 
 #pragma once
 
@@ -9,20 +9,20 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include "KorkeusDEMOCPP.h"
+#include "KorkeusDEMO.h"
 
 using namespace std;
 
-// Calculates elevation data into RGB values
-void CalculateRGBValues(vector<double>& maparray, unsigned char*& rgbarray, MapMetadata& metadata) {
+// Calculates RGB values based on provided elevation data, used by FileIntoRGB()
+void CalculateRGBValues(vector<float>& maparray, unsigned char*& rgbarray, MapMetadata& metadata) {
 
 	// Calculate RGB values based on the max range of elevations
-	double minValue = *min_element(maparray.begin(), maparray.end());
-	double maxValue = *max_element(maparray.begin(), maparray.end());
-	double mapRange = maxValue - minValue;
+	float minValue = *min_element(maparray.begin(), maparray.end());
+	float maxValue = *max_element(maparray.begin(), maparray.end());
+	float mapRange = maxValue - minValue;
 
 	int n;
-	for (int i = 0; i < metadata.MapSize(); i++) {
+	for (int i = 0; i < metadata.mapsize; i++) {
 		n = i * 3;
 		rgbarray[n] = 0;
 		rgbarray[n + 1] = (unsigned char)round(((maparray[i] - minValue) / mapRange) * 255);
@@ -31,12 +31,12 @@ void CalculateRGBValues(vector<double>& maparray, unsigned char*& rgbarray, MapM
 };
 
 // Main function for opening and handling the file
-// From string to tokenized float to RGB
-// Target file hardcoded, for now
+// open file -> tokenize + convert to float -> convert to RGB bytes
+// Target file hardcoded (for now) see TARGET_FILE in KorkeusDEMO.h to change path/file
 bool FileIntoRGB(MapRGBData& mapRGB, MapMetadata& meta) {
 
 	// Open file
-	ifstream mapfile(".\\files\\L3324.asc");
+	ifstream mapfile(TARGET_FILE);
 	if (mapfile.is_open()) {
 
 		// String stream
@@ -47,7 +47,7 @@ bool FileIntoRGB(MapRGBData& mapRGB, MapMetadata& meta) {
 		mapfile.close();
 
 		// Read metadata
-		// Horrible hack version
+		// Horrible hackjob; see ParseTheData() in openfile.js in the javascript version for proper implementation
 		std::string* ignore = new std::string;
 		for (int i = 0; i < 13; i++) {
 			switch (i) {
@@ -65,21 +65,22 @@ bool FileIntoRGB(MapRGBData& mapRGB, MapMetadata& meta) {
 			}
 		}
 		delete ignore;
+		meta.CalculateMapSize();
 
 		// Tokenization + conversion to float
-		// Quite hacky
-		vector<double> mapElevationData;
+		// Implementation is a bit hacky, but fastest of the bunch I tried
+		// Performance throttled by running in a single thread
+		vector<float> mapElevationData (meta.mapsize);
 		char* temp = new char[10];
-
-		for (int i = 0; i < meta.MapSize(); i++) {
+		for (int i = 0; i < meta.mapsize; i++) {
 			mapstring >> temp;
-			mapElevationData.push_back(atof(temp));
+			mapElevationData[i] = (float)atof(temp);
 		}
 		delete[] temp;
 		mapstring.str("");
 
 		// Calculate RGB values
-		mapRGB.Initialize(meta.MapSize());
+		mapRGB.Initialize(meta.mapsize);
 		CalculateRGBValues(mapElevationData, mapRGB.rgbdata, meta);
 		return true;
 	}

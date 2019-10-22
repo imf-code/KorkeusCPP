@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="KorkeusDEMO.h" />
     <ClInclude Include="KorkeusDEMOCPP.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />

@@ -1,8 +1,10 @@
 // KorkeusDEMOCPP.cpp : Defines the entry point for the application.
-//
+// Mostly pre-generated default code for showing a windows window. 
+// Code for calculating RGB bytes and drawing the map in window located mostly under WM_CREATE and WM_PAINT -messages
 
 #include "framework.h"
 #include "KorkeusDEMOCPP.h"
+#include "KorkeusDEMO.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,8 +31,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
-	// TODO: Place code here.
 
 	// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -133,6 +133,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		// Load file on startup
 		isInitializationDone = FileIntoRGB(rgb, meta);
+		if (!isInitializationDone) {
+			::MessageBox(NULL, __T("File not found.\nTo set target file, see TARGET_FILE in KorkeusDEMO.h"), __T("Error"), MB_OK);
+			return NULL;
+		}
 		break;
 	case WM_COMMAND:
 	{
@@ -155,10 +159,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-		HDC hMemDC = CreateCompatibleDC(hdc);
 
-		// Draw map image if file was successfully loaded on startup
+		// Draw the map in window, if file was successfully loaded on startup
 		if (isInitializationDone == true) {
+			HDC hMemDC = CreateCompatibleDC(hdc);
 			HBITMAP hBmp = ::CreateCompatibleBitmap(hdc, meta.mapwidth, meta.mapheight);
 			BitmapData mapBit(hdc, hBmp, rgb.rgbdata, meta.mapwidth, meta.mapheight);
 
